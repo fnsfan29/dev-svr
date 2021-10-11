@@ -2,12 +2,17 @@ version: '3.7'
 services:
   gitLab:
     image: gitlab/gitlab-ce:latest
+    restart: always
     ports:
-     - "50081:80"
+      - "50081:80"
+      - "20022:22"
     volumes:
-     - '/srv/gitlab/config:/etc/gitlab'
-     - '/srv/gitlab/logs:/var/log/gitlab'
-     - '/srv/gitlab/data:/var/opt/gitlab'
+      - '/srv/gitlab/config:/etc/gitlab'
+      - '/srv/gitlab/logs:/var/log/gitlab'
+      - '/srv/gitlab/data:/var/opt/gitlab'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         gitlab_rails['initial_root_password'] = "root"
+        # @HACK http setting -> Custom Git clone URL for HTTP(S)
+        gitlab_rails['gitlab_shell_ssh_port'] = 20022
+        external_url 'http://c97591'
